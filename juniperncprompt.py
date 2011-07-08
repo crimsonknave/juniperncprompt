@@ -24,7 +24,7 @@ parser.add_argument('--logout-path', help="The path to the logout call, so we do
 parser.add_argument('--cert', help="The location of the cert file to use with ncui", default="{}/.juniper_networks/network_connect/ssl.crt".format(os.environ["HOME"]))
 
 args = parser.parse_args()
-print(args)
+#print(args)
 
 def log_out(opener):
   print("Logging out now")
@@ -42,7 +42,7 @@ passwords = {}
 for pass_name in args.password_fields.split(','):
   passwords[pass_name] = getpass.getpass("'"+pass_name+"':")
 
-print("We'll be trying to connect to:\nhostname: {}{} with user: {}, passes: {}, realm: {}".format(args.hostname, args.login_path, args.username, ", ".join(["{}:{}".format(k,v) for k,v in passwords.items()]), args.realm))
+#print("We'll be trying to connect to:\nhostname: {}{} with user: {}, passes: {}, realm: {}".format(args.hostname, args.login_path, args.username, ", ".join(["{}:{}".format(k,v) for k,v in passwords.items()]), args.realm))
 
 params = {"username": args.username, "realm": args.realm, "btnSubmit": "Sign In"}
 params.update(passwords)
@@ -65,8 +65,8 @@ try:
   print(session)
 
   params = [args.nc_path+"/ncui", "-h",args.hostname, "-c", "DSID="+session,  "-f",args.cert]
-  print(params)
-  print()
+  #print(params)
+  #print("")
   print("ncui will ask you for a password... I have no idea *which* one it wants so just hit enter and everything seems to work.  Use Ctrl+C when you are done")
   stream = subprocess.call(params)
 
