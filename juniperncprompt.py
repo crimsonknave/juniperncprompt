@@ -12,10 +12,11 @@ if sys.version_info < (2,7):
   sys.exit(0)
 
 
+# The defaults are what my set up expect, change them if you want
 parser = argparse.ArgumentParser(description="Set up the vpn tunnel.")
 parser.add_argument('hostname', help="The hostname of the vpn server")
 parser.add_argument('-u', '--username', default=None)
-parser.add_argument('--password-fields', help="What are the password fields required by your vpn site.  Delimited by commas please", default="password")
+parser.add_argument('--password-fields', help="What are the password fields required by your vpn site.  Delimited by commas please", default="password,password#2")
 parser.add_argument('-r', '--realm', help="What realm are we using.  This will be a hidden field in the web form on the vpn site", default="Active Directory Users")
 parser.add_argument('--login-path', help="The path to the login page (What the submit button points to)", default="/dana-na/auth/url_2/login.cgi")
 parser.add_argument('--nc-path', help="Where the juniper network connect files are located", default="{}/.juniper_networks/network_connect".format(os.environ["HOME"]))
@@ -35,7 +36,7 @@ def log_out(opener):
     print("We tried to log out, but were unable to, there may be a lingering session...")
 
 if not args.username:
-  args.username = input("Please enter your username: ")
+  args.username = raw_input("Please enter your username: ")
 
 passwords = {}
 for pass_name in args.password_fields.split(','):
