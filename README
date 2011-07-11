@@ -1,0 +1,32 @@
+Install steps (below) are compiled from http://makefile.com/.plan/2009/10/juniper-vpn-64-bit-linux-an-unsolved-mystery/
+
+This script logs into a juniper network connect vpn website using authentication provided by you and retrieves the DSID cookie which can be passed to the ncui executable to create a VPN tunnel.  This allows users on linux to connect to the tunnel without using the web client and/or a 32 bit java.
+
+I found it neccessary to use this solution because my work required both a password and a secureid token and all of the tools provided by Juniper do not allow you to pass a second password.  If you only need to use a single password the accepted answer seems to be to use http://mad-scientist.us/juniper.html, but my script should work as well (Haven't tested it, but see no reason it won't)
+
+What you need to get this to work:
+1) xterm (the java app won't install the files without xterm)
+2) gcc multilib (I've only tested this on 64 bit)
+3) /tmp and /etc on the same partition (the program can't swap your
+/etc/resolv.conf otherwise... sad, I know)
+4) python (I believe 2.7 is needed, not sure it might run on 2.6 and it is almost python 3
+compatable, should be only library names needing to be changed.
+
+To get the files we'll need do the following:
+1) Log in to your vpn website
+2) If you aren't redirected to the network connect page go there
+3) A java app should try to start let it run (you will likely be asked twice)
+4) Make sure that you have libncui.so and ncsvc in ~/.juniper_networks/network_connect/
+5) If you don't have both of those make sure xterm is installed and that a java prompt didn't get hidden under a window
+
+Setup the files:
+1) cd ~/.juniper_networks/network_connect
+2) gcc -m32 -Wl,-rpath,`pwd` -o ncui libncui.so
+3) sudo chown root:root ncui
+4) sudo chmod 4775 ncui
+5) echo | openssl s_client -connect vpn.constantcontact.com:443 2>&1 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | openssl x509 -outform der > ssl.crt
+6) ./juniperncprompt.py vpn.website
+
+The default values are set up for the vpn setup at my work, they can all be adjusted with a command line flag or by changing the source file if you want.
+
+If you have any questions or comments please feel free to email me at crimsonknave@gmail.com
