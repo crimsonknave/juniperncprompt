@@ -1,4 +1,5 @@
 #!/usr/bin/env python2
+# If this doesn't run for you, replace python2 with python
 
 ###################
 # Copyright 2011 Joseph Henrich (jhenrich@constantcontact.com)
@@ -22,8 +23,9 @@ import sys
 import getpass
 import argparse
 import urllib2, urllib, cookielib
-import subprocess
 import os
+import pexpect
+import time
 
 
 # The defaults are what my set up expect, change them if you want
@@ -37,8 +39,8 @@ parser.add_argument('--nc-path', help="Where the juniper network connect files a
 parser.add_argument('--logout-path', help="The path to the logout call, so we don't leave sessions trailing behind us.", default="/dana-na/auth/url_2/logout.cgi")
 parser.add_argument('--cert', help="The location of the cert file to use with ncui", default="{}/.juniper_networks/network_connect/ssl.crt".format(os.environ["HOME"]))
 
+
 args = parser.parse_args()
-#print(args)
 
 def log_out(opener):
   print("Logging out now")
@@ -56,7 +58,6 @@ passwords = {}
 for pass_name in args.password_fields.split(','):
   passwords[pass_name] = getpass.getpass("'"+pass_name+"':")
 
-#print("We'll be trying to connect to:\nhostname: {}{} with user: {}, passes: {}, realm: {}".format(args.hostname, args.login_path, args.username, ", ".join(["{}:{}".format(k,v) for k,v in passwords.items()]), args.realm))
 
 params = {"username": args.username, "realm": args.realm, "btnSubmit": "Sign In"}
 params.update(passwords)
@@ -76,13 +77,15 @@ try:
     out_file.close()
     print("Couldn't find any cookies for {}, code was {}, body written to {}".format(args.hostname, r.getcode(), out_file.name))
     sys.exit(1)
-  print(session)
 
-  params = [args.nc_path+"/ncui", "-h",args.hostname, "-c", "DSID="+session,  "-f",args.cert]
-  #print(params)
-  #print("")
-  print("ncui will ask you for a password... I have no idea *which* one it wants so just hit enter and everything seems to work.  Use Ctrl+C when you are done")
-  stream = subprocess.call(params)
+  command = "{}/ncui -h {} -c DSID={} -f {}".format(args.nc_path, args.hostname, session, args.cert)
+  print("Got the session ({}) creating the tunnel now, use Ctrl+C when you are done.".format(session))
+  child = pexpect.spawn(command)
+  child.expect('Password:')
+  child.sendline("")
+  while child.isalive():
+    #We don't expect the child to die, but we certainly should exit if it does
+    time.sleep(1)
 
 
   print("Done!")
@@ -94,7 +97,4 @@ except Exception, e:
   
 except KeyboardInterrupt:
   log_out(opener)
-
-
-
 
