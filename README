@@ -26,6 +26,8 @@ Setup the files:
 4) sudo chmod 4775 ncui
 5) echo | openssl s_client -connect vpn.constantcontact.com:443 2>&1 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | openssl x509 -outform der > ssl.crt
 6) ./juniperncprompt.py vpn.website
+7) ifconfig (typically /sbin for those who don't have sbin in their path)
+You should see a tun0, if so everything worked and you are connected to the vpn
 
 The default values are set up for the vpn setup at my work, they can all be adjusted with a command line flag or by changing the source file if you want.
 
