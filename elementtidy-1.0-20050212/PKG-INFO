@@ -1,0 +1,10 @@
+Metadata-Version: 1.0
+Name: elementtidy
+Version: 1.0-20050212
+Summary: ElementTidy - a tidylib interface for ElementTree
+Home-page: http://effbot.org/zone/element-tidylib.htm
+Author: Fredrik Lundh
+Author-email: fredrik@pythonware.com
+License: UNKNOWN
+Description: UNKNOWN
+Platform: UNKNOWN

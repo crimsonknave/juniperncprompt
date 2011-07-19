@@ -1,0 +1,131 @@
+$Id: README 2275 2005-02-03 18:20:56Z fredrik $
+
+======================
+The elementtidy module
+======================
+
+This module provides an ElementTree builder based on the HTML TidyLib
+library.  For more information, see:
+
+    http://effbot.org/zone/element-tidylib.htm
+
+For more information on the ElementTree library, see:
+
+    http://effbot.org/zone/element-index.htm
+
+This distribution includes a snapshot of the HTML Tidy sources.  You
+can get the latest version from:
+
+    http://tidy.sourceforge.net
+
+Enjoy /F
+
+fredrik@pythonware.com
+http://www.pythonware.com
+
+--------------------------------------------------------------------
+Changes
+--------------------------------------------------------------------
+
+(1.0 final released)
+
+- Improved error checking.  The library may now raise IOError
+  exceptions if the underlying Tidy library fails.
+
+(1.0 beta 1 released)
+
+- Use 'ForceOutput' flag to force output even for badly malformed
+  HTML.
+
+- Added source encoding support (based on code by Kevin Dangoor).
+
+(1.0 alpha 3 released)
+
+- Fixed core dump when pages are broken beyond repair (reported by
+  many, fix proposed by Brad Clements)
+
+(1.0 alpha 2 released)
+
+- Capture error output (available via the 'errlog' attribute on the
+  parser instance).
+
+(1.0 alpha 1 released -- initial release)
+
+--------------------------------------------------------------------
+Software License
+--------------------------------------------------------------------
+
+The software components in this package are copyrighted, but can all
+be used freely in all sorts of applications.
+
+The _elementtree binding, and associated Python code, is
+
+   Copyright (c) 2003-2005 by Fredrik Lundh.  All rights reserved.
+
+   By obtaining, using, and/or copying this software and/or its
+   associated documentation, you agree that you have read, understood,
+   and will comply with the following terms and conditions:
+
+   Permission to use, copy, modify, and distribute this software and its
+   associated documentation for any purpose and without fee is hereby
+   granted, provided that the above copyright notice appears in all
+   copies, and that both that copyright notice and this permission notice
+   appear in supporting documentation, and that the name of Secret Labs
+   AB or the author not be used in advertising or publicity pertaining to
+   distribution of the software without specific, written prior
+   permission.
+
+   SECRET LABS AB AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH REGARD TO
+   THIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+   FITNESS.  IN NO EVENT SHALL SECRET LABS AB OR THE AUTHOR BE LIABLE FOR
+   ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+   WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+   ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+   OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+--------------------------------------------------------------------
+
+The TidyLib library is copyright (c) by 1998-2003 World Wide Web
+Consortium.  Software license:
+
+   HTML Tidy
+
+   HTML parser and pretty printer
+
+   Copyright (c) 1998-2003 World Wide Web Consortium
+   (Massachusetts Institute of Technology, European Research 
+   Consortium for Informatics and Mathematics, Keio University).
+   All Rights Reserved.
+
+   This software and documentation is provided "as is," and
+   the copyright holders and contributing author(s) make no
+   representations or warranties, express or implied, including
+   but not limited to, warranties of merchantability or fitness
+   for any particular purpose or that the use of the software or
+   documentation will not infringe any third party patents,
+   copyrights, trademarks or other rights. 
+
+   The copyright holders and contributing author(s) will not be held
+   liable for any direct, indirect, special or consequential damages
+   arising out of any use of the software or documentation, even if
+   advised of the possibility of such damage.
+
+   Permission is hereby granted to use, copy, modify, and distribute
+   this source code, or portions hereof, documentation and executables,
+   for any purpose, without fee, subject to the following restrictions:
+
+   1. The origin of this source code must not be misrepresented.
+   2. Altered versions must be plainly marked as such and must
+      not be misrepresented as being the original source.
+   3. This Copyright notice may not be removed or altered from any
+      source or altered source distribution.
+
+   The copyright holders and contributing author(s) specifically
+   permit, without fee, and encourage the use of this source code
+   as a component for supporting the Hypertext Markup Language in
+   commercial products. If you use this source code in a product,
+   acknowledgment is not required but would be appreciated.
+
+(from http://tidy.sourceforge.net/license.html)
+
+--------------------------------------------------------------------
