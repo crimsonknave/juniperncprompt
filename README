@@ -25,10 +25,15 @@ Setup the files:
 3) sudo chown root:root ncui
 4) sudo chmod 4775 ncui
 5) echo | openssl s_client -connect vpn.constantcontact.com:443 2>&1 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | openssl x509 -outform der > ssl.crt
-6) ./juniperncprompt.py vpn.website
-7) ifconfig (typically /sbin for those who don't have sbin in their path)
+6) cd elementtidy-1.0-20050212 
+7) sudo python setup.py (make sure you use the correct version of python to setup and install if you have multiple versions on your system)
+8) cd ../
+9) ./juniperncprompt.py vpn.website
+10) ifconfig (typically /sbin for those who don't have sbin in their path)
 You should see a tun0, if so everything worked and you are connected to the vpn
 
 The default values are set up for the vpn setup at my work, they can all be adjusted with a command line flag or by changing the source file if you want.
 
 If you have any questions or comments please feel free to email me at crimsonknave@gmail.com
+
+This distribution includes the sources for elementtidy and tidylib.  You can get the latest elementtidy from http://effbot.org/downloads/ and tidylib from http://tidy.sourceforge.net/

@@ -1,5 +1,3 @@
 In no particular order
 
-Handle the fact that you do not get a cookie if there is an existing session open.  You need to choose to close the existing sessions or continue.  Related: will need to detect if there are any sessions still available or not.
-
-Would be nice to parse out if the log in failed due to invalid password and just ask for username and password(s) again.
+Logging?
