@@ -185,10 +185,7 @@ class JuniperNCPrompt:
       base_data.append((form_data_str['name'], form_data_str['value']))
     else:
       base_data = [(button['name'],button['value']), (form_data_str['name'],form_data_str['value'])]
-    print base_data
     self.data = urllib.urlencode(base_data)
-    print self.data
-    print type(self.data)
     self.log_in()
 
     
