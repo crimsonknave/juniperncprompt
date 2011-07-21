@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# If this doesn't run for you, replace python2 with python
 
 ###################
 # Copyright 2011 Joseph Henrich (crimsonknave@gmail.com)
@@ -199,7 +198,7 @@ class JuniperNCPrompt:
       base_data.append((form_data_str['name'], form_data_str['value']))
     else:
       base_data = [(button['name'],button['value']), (form_data_str['name'],form_data_str['value'])]
-    self.data = urlparse.urlencode(base_data)
+    self.data = urlparse.urlencode(base_data).encode('ascii')
     self.log_in()
 
     
@@ -228,7 +227,6 @@ class JuniperNCPrompt:
       self.args.username = input("Please enter your username: ")
 
   def log_in(self):
-    print(type(self.data))
     self.latest_response = self.opener.open("https://{}{}".format(self.args.hostname, self.args.login_path), self.data)
 
   def get_session(self):
@@ -251,6 +249,7 @@ class JuniperNCPrompt:
     command = "{}/ncui -h {} -c DSID={} -f {}".format(self.args.nc_path, self.args.hostname, session, self.args.cert)
     print("Got the session ({}) creating the tunnel now, use Ctrl+C when you are done.".format(session))
     child = pexpect.spawn(command)
+    # pexpect needs to be properly converted to py3k, 2to3 doesn't work
     child.expect('Password:')
     child.sendline("")
     while child.isalive():
@@ -263,7 +262,7 @@ class JuniperNCPrompt:
     # This is only likly to happen if this is imported as a module
     params = {"username": self.args.username, "realm": self.args.realm, "btnSubmit": "Sign In"}
     params.update(passwords)
-    return urlparse.urlencode(params)
+    return urlparse.urlencode(params).encode('ascii')
 
 
 if __name__ == "__main__":
