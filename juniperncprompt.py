@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 # If this doesn't run for you, replace python2 with python
 
 ###################
@@ -22,7 +22,14 @@
 import sys
 import getpass
 import argparse
-import urllib2, urllib, cookielib
+try:
+  import urllib2 as urlrequest
+  import urllib as urlparse
+  import cookielib as cookiejar
+except ImportError:
+  import urllib.parse as urlparse
+  import urllib.request as urlrequest
+  from http import cookiejar
 import os
 import pexpect
 import time
@@ -56,9 +63,9 @@ def find_sessions(base, par=None):
 
 def find_by_name(base, name):
   try:
-    if dict(base.items())['name'] == name:
+    if dict(list(base.items()))['name'] == name:
       return base
-  except KeyError, AttributeError:
+  except (KeyError, AttributeError):
     pass
 
   for child in base.getchildren():
@@ -67,15 +74,15 @@ def find_by_name(base, name):
       return answer
 
 def find_session_values(table):
-  return [dict(tr.getchildren()[0].getchildren()[0].items()) for tr in table.getchildren()[1:]]
+  return [dict(list(tr.getchildren()[0].getchildren()[0].items())) for tr in table.getchildren()[1:]]
 
 def display_session(table):
   i = 0
   for tr in table.getchildren():
     if i == 0:
-      print(u"     "+u"".join([u"{:<30}".format(text) for text in [td.text for td in tr.getchildren()][1:5]]))
+      print("     "+"".join(["{:<30}".format(text) for text in [td.text for td in tr.getchildren()][1:5]]))
     else:
-      print(u"{:<3}: ".format(i)+u"".join([u"{:<30}".format(text) for text in [td.text for td in tr.getchildren()][1:5]]))
+      print("{:<3}: ".format(i)+"".join(["{:<30}".format(text) for text in [td.text for td in tr.getchildren()][1:5]]))
     i += 1
 
 
@@ -88,8 +95,8 @@ class JuniperNCPrompt:
     self.passwords = self.get_passwords()
     self.data = self.configure_data(self.passwords)
 
-    self.cj = cookielib.CookieJar()
-    self.opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(self.cj))
+    self.cj = cookiejar.CookieJar()
+    self.opener = urlrequest.build_opener(urlrequest.HTTPCookieProcessor(self.cj))
 
   def parse_error(self, html):
     tree = TidyHTMLTreeBuilder.parse(html)
@@ -101,13 +108,13 @@ class JuniperNCPrompt:
     if self.form is None:
       self.form = root.find('{}body/{}blockquote/{}form'.format(*[prefix]*3))
     if self.form is not None:
-      fields = dict(self.form.items())
+      fields = dict(list(self.form.items()))
       if fields['name'] == 'frmConfirmation':
         # Existing sessions open
         print("There are existing sessions open")
         #submit = form.find('{}table/{}tr/{}td/{}table/{}tr/{}td/{}table/{}tr/{}td/{}table/{}tr/{}td/{}input'.format(*[prefix]*13))
         submit = find_by_name(self.form, 'btnContinue')
-        values = dict(submit.items())
+        values = dict(list(submit.items()))
         table = find_sessions(self.form)
         display_session(table)
         if values["value"] == "Close Selected Sessions and Log in":
@@ -135,7 +142,7 @@ class JuniperNCPrompt:
         # Wait till the next token pops up and then enter it
         temp = self.form.find('{}/input'.format(prefix))
         if temp is not None:
-          values = dict(temp.items())
+          values = dict(list(temp.items()))
           try:
             if values['name'] == 'key':
               key = values['value']
@@ -159,9 +166,16 @@ class JuniperNCPrompt:
 
   def close_sessions(self, table, required=False):
     if required:
-      reply = raw_input("Sessions maxed out, select at least one to close (space delimited)")
+      try:
+        reply = raw_input("Sessions maxed out, select at least one to close (space delimited)")
+      except NameError:
+        reply = input("Sessions maxed out, select at least one to close (space delimited)")
+
     else:
-      reply = raw_input("Close any sessions you wish to, or log in with out closing sessions by typing 'n' (space delimited)")
+      try:
+        reply = raw_input("Close any sessions you wish to, or log in with out closing sessions by typing 'n' (space delimited)")
+      except NameError:
+        reply = input("Close any sessions you wish to, or log in with out closing sessions by typing 'n' (space delimited)")
       if reply.strip() == 'n':
         reply = ""
 
@@ -172,10 +186,10 @@ class JuniperNCPrompt:
       display_session(table)
       self.close_sessions(table, required)
 
-    button = dict(find_by_name(self.form, "btnContinue").items())
-    form_data_str = dict(find_by_name(self.form, "FormDataStr").items())
+    button = dictlist((find_by_name(self.form, "btnContinue").items()))
+    form_data_str = dict(list(find_by_name(self.form, "FormDataStr").items()))
 
-    sessions = [dict(tr.getchildren()[0].getchildren()[0].items()) for tr in table.getchildren()[1:]]
+    sessions = [dict(list(tr.getchildren()[0].getchildren()[0].items())) for tr in table.getchildren()[1:]]
     sessions_to_close = [(x['name'], x['value']) for x in [sessions[y] for y in to_close]]
     print("Closing {} which turns out to be {}".format(to_close, sessions_to_close))
     if to_close:
@@ -185,7 +199,7 @@ class JuniperNCPrompt:
       base_data.append((form_data_str['name'], form_data_str['value']))
     else:
       base_data = [(button['name'],button['value']), (form_data_str['name'],form_data_str['value'])]
-    self.data = urllib.urlencode(base_data)
+    self.data = urlparse.urlencode(base_data)
     self.log_in()
 
     
@@ -198,7 +212,7 @@ class JuniperNCPrompt:
       self.latest_response = self.opener.open("https://{}{}".format(self.args.hostname, self.args.logout_path))
       if self.latest_response.getcode() != 200:
         print("Got a non 200 back ({}), there may be a session still around.".format(self.latest_response.getcode()))
-    except Exception, e:
+    except Exception as e:
       print("We tried to log out, but were unable to, there may be a lingering session...")
 
   def get_passwords(self):
@@ -208,9 +222,13 @@ class JuniperNCPrompt:
     return passwords
 
   def get_user(self):
-    self.args.username = raw_input("Please enter your username: ")
+    try:
+      self.args.username = raw_input("Please enter your username: ")
+    except NameError:
+      self.args.username = input("Please enter your username: ")
 
   def log_in(self):
+    print(type(self.data))
     self.latest_response = self.opener.open("https://{}{}".format(self.args.hostname, self.args.login_path), self.data)
 
   def get_session(self):
@@ -218,7 +236,7 @@ class JuniperNCPrompt:
     try:
       session = cookies[self.args.hostname]['/']['DSID'].value
       return session
-    except KeyError, e:
+    except KeyError as e:
       out_file = open(self.args.out_file, 'w')
       out_file.write(self.latest_response.read())
       out_file.close()
@@ -245,7 +263,7 @@ class JuniperNCPrompt:
     # This is only likly to happen if this is imported as a module
     params = {"username": self.args.username, "realm": self.args.realm, "btnSubmit": "Sign In"}
     params.update(passwords)
-    return urllib.urlencode(params)
+    return urlparse.urlencode(params)
 
 
 if __name__ == "__main__":
@@ -259,7 +277,7 @@ if __name__ == "__main__":
 
     print("Done!")
     attempt.log_out()
-  except Exception, e:
+  except Exception as e:
     print("Uh-oh, we got an exception: {} cleaning up now".format(e))
     print(sys.exc_info()[0])
     attempt.log_out()
