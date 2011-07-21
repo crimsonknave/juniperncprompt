@@ -103,10 +103,10 @@ elementtidy_fixup(PyObject* self, PyObject* args)
     }
 
 
-    pyout = PyString_FromString(out.bp ? out.bp : "");
+    pyout = PyUnicode_FromString(out.bp ? out.bp : "");
     if (!pyout)
         goto error;
-    pyerr = PyString_FromString(err.bp ? err.bp : "");
+    pyerr = PyUnicode_FromString(err.bp ? err.bp : "");
     if (!pyerr) {
         Py_DECREF(pyout);
         goto error;
@@ -133,11 +133,26 @@ static PyMethodDef _functions[] = {
     {NULL, NULL}
 };
 
+static struct PyModuleDef _elementtidy = {
+  PyModuleDef_HEAD_INIT,
+  "_elementtidy",
+  NULL,
+  -1,
+  _functions
+};
+
 void
 #ifdef WIN32
 __declspec(dllexport)
 #endif
+/*
 init_elementtidy()
 {
-    Py_InitModule("_elementtidy", _functions);
+Py_InitModule("_elementtidy", _functions);
+
+}
+*/
+PyInit__elementtidy()
+{
+  PyModule_Create(&_elementtidy);
 }
