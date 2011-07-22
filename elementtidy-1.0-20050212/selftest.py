@@ -2,7 +2,10 @@
 # -*- coding: iso-8859-1 -*-
 # elementtidy selftest program (in progress)
 
-from elementtree import ElementTree
+try:
+  from elementtree import ElementTree
+except ImportError:
+  from xml.etree import ElementTree
 
 def sanity():
     """
@@ -31,12 +34,12 @@ XML1 = """\
 def check(a, b):
     import re
     a = ElementTree.tostring(ElementTree.XML(a))
-    a = re.sub("HTML Tidy[^\"]+", "TIDY", a)
+    a = re.sub("HTML Tidy[^\"]+", "TIDY", str(a))
     a = re.sub("\r\n", "\n", a)
     if a != b:
-        print a
-        print "Expected:"
-        print b
+        print(a)
+        print("Expected:")
+        print(b)
 
 def testdriver():
     """
@@ -83,4 +86,4 @@ def xmltoolkit48():
 if __name__ == "__main__":
     import doctest, selftest
     failed, tested = doctest.testmod(selftest)
-    print tested - failed, "tests ok."
+    print(tested - failed, "tests ok.")
