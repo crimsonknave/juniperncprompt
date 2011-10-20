@@ -7,9 +7,10 @@ I found it neccessary to use this solution because my work required both a passw
 What you need to get this to work:
 1) xterm (the java app won't install the files without xterm)
 2) gcc multilib (I've only tested this on 64 bit)
-3) /tmp and /etc on the same partition (the program can't swap your
+3) 32bit zlib
+4) /tmp and /etc on the same partition (the program can't swap your
 /etc/resolv.conf otherwise... sad, I know)
-4) python (I believe 2.7 is needed, not sure it might run on 2.6 and it is almost python 3
+5) python (I believe 2.7 is needed, not sure it might run on 2.6 and it is almost python 3
 compatable, should be only library names needing to be changed.
 
 To get the files we'll need do the following:
