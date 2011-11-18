@@ -171,6 +171,7 @@ class JuniperNCPrompt:
       reply = False
       display_session(table)
       self.close_sessions(table, required)
+      return
 
     button = dict(find_by_name(self.form, "btnContinue").items())
     form_data_str = dict(find_by_name(self.form, "FormDataStr").items())
@@ -235,6 +236,7 @@ class JuniperNCPrompt:
     child = pexpect.spawn(command)
     child.expect('Password:')
     child.sendline("")
+    #print child.read()
     while child.isalive():
       #We don't expect the child to die, but we certainly should exit if it does
       time.sleep(1)
