@@ -120,17 +120,42 @@ class JuniperNCPrompt:
         else:
           return self.parse_error(self.args.out_file)
       elif fields['name'] == 'frmLogin':
-        # Invalid user/pass try again
-        print("Invalid user/pass, please try again")
-        self.get_user()
-        passwords = self.get_passwords()
-        self.data = self.configure_data(passwords)
-        self.log_in()
-        session = self.get_session()
-        if session is not None:
-          return session
-        else:
-          return self.parse_error(self.args.out_file)
+	print "Found login form, looking post-auth message"
+	# This may be the post-login form
+	# check whether there's a hidden field with a key
+	#print tostring(self.form)
+	temp = self.form.getiterator('{}input'.format(prefix))
+	isSecondary = 0
+	if temp is not None:
+	  for t in temp:
+	    #print tostring(t)
+	    if t.get('name') == 'key':
+	      key = t.get('value')
+	      isSecondary = 1
+	      break
+
+	if isSecondary == 1:
+          dat = {"key": key, "sn-postauth-proceed": "Proceed"}
+	  #print dat
+	  self.opener.open("https://{}{}".format(self.args.hostname, self.args.login_path), urllib.urlencode(dat))
+	  #print 'Attempting to get session'
+	  session = self.get_session()
+	  if session is not None:
+	    return session
+	  else:
+	    return self.parse_error(self.args.out_file)
+	else:
+	  # Invalid user/pass try again
+	  print("Invalid user/pass, please try again")
+	  self.get_user()
+	  passwords = self.get_passwords()
+	  self.data = self.configure_data(passwords)
+	  self.log_in()
+	  session = self.get_session()
+	  if session is not None:
+	    return session
+	  else:
+	    return self.parse_error(self.args.out_file)
       elif fields['name'] == 'frmNextToken':
         # Wait till the next token pops up and then enter it
         temp = self.form.find('{}/input'.format(prefix))
