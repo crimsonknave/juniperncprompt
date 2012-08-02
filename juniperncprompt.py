@@ -248,6 +248,7 @@ class JuniperNCPrompt:
       out_file = open(self.args.out_file, 'w')
       out_file.write(self.latest_response.read())
       out_file.close()
+      print("Something went wrong, html of last page is written to {}".format(self.args.out_file))
       session = self.parse_error(self.args.out_file)
       if session:
         return session
