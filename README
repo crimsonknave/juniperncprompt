@@ -10,8 +10,7 @@ What you need to get this to work:
 3) 32bit zlib
 4) /tmp and /etc on the same partition (the program can't swap your
 /etc/resolv.conf otherwise... sad, I know)
-5) python (I believe 2.7 is needed, not sure it might run on 2.6 and it is almost python 3
-compatable, should be only library names needing to be changed.
+5) python and python-devel (I believe 2.7 is needed, not sure it might run on 2.6 and it is almost python 3 compatable, should be only library names needing to be changed.)
 
 To get the files we'll need do the following:
 1) Log in to your vpn website
@@ -26,10 +25,10 @@ Setup the files:
 3) sudo chown root:root ncui
 4) sudo chmod 4775 ncui
 5) echo | openssl s_client -connect vpn.constantcontact.com:443 2>&1 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | openssl x509 -outform der > ssl.crt
-6) cd elementtidy-1.0-20050212 
+6) cd <your git directory>/juniperncprompt/elementtidy-1.0-20050212 
 7) sudo python setup.py install (make sure you use the correct version of python to setup and install if you have multiple versions on your system)
 8) cd ../
-9) ./juniperncprompt.py vpn.website
+9) ./juniperncprompt.py vpn.constantcontact.com
 10) ifconfig (typically /sbin for those who don't have sbin in their path)
 You should see a tun0, if so everything worked and you are connected to the vpn
 
